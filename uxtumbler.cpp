@@ -29,6 +29,14 @@ void UXTUMBLER::mouseMoveEvent(QMouseEvent *event)
         curval = stayval -  0.02*(event->pos() - initpoint).x();
         update();
     }
+    if(curval>=maxbound)
+    {
+        curval=maxbound;
+        update();
+        return;
+    }
+    if(curval<=minbound)
+    { curval = minbound;update();return;}
 //    if((mtime.msec() - lasttime)>1)
     qDebug() << qreal((event->pos()-lastpos).x())/(lasttime);
     mspeed  = qreal((event->pos()-lastpos).x())/(lasttime);
@@ -44,7 +52,14 @@ void UXTUMBLER::mouseReleaseEvent(QMouseEvent *event)
         speedinfluent = true;
         stayval -= 0.02*(event->pos() - initpoint).x();
         curval = stayval;
-
+        if(curval>=maxbound)
+        {
+            curval=maxbound;
+            update();
+            return;
+        }
+        if(curval<=minbound)
+        { curval = minbound;update();return;}
     update();
 
     timer->start();
