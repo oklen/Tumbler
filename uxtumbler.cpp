@@ -81,6 +81,9 @@ void UXTUMBLER::paintEvent(QPaintEvent *event)
     {
         mpainter->drawText(QRect(int((i-repair)*50)+50,100,30,30),QString::number(int(leftv)+i));
     }
+    mpen.setWidth(3);
+    mpainter->setPen(mpen);
+    mpainter->drawLine(157,130,157,120);
     mpainter->end();
 }
 
@@ -88,11 +91,18 @@ void UXTUMBLER::interf()
 {
     if(speedinfluent)
     {
-        qDebug() << "Doing" << mspeed << " "
-                 << (mspeed >0.00001 || mspeed<-0.00001);
+//        qDebug() << "Doing" << mspeed << " "
+//                 << (mspeed >0.00001 || mspeed<-0.00001);
         if(mspeed >=0.01 || mspeed<= -0.01)
-        {
+        {    qDebug() << "checking!";
+
             curval -=(10*mspeed*0.2 /*-50*0.001*/);
+            if(int(curval)>maxbound)
+            {  curval = maxbound;
+            mspeed = 0;}
+            if(int(curval)<minbound)
+            {  curval = minbound;
+            mspeed = 0;}
             qDebug() << curval;
             repaint();
             if(mspeed>0.2)
@@ -104,9 +114,33 @@ void UXTUMBLER::interf()
             else
                 mspeed += 0.001;
         }
+        else
+        {
+            if(int(curval) != curval)
+            {
+                qDebug() << "checking!2 " << curval << "  " + QString::number(int(curval) - curval);
+                if(int(curval)>maxbound)
+                {      curval = maxbound;
+                return;}
+                if(int(curval)<minbound)
+                {            curval = minbound;
+                return;}
+                if( (int(curval) - curval) <-0.005)
+                    curval+=0.004;
+                 else if((int(curval) - curval)<0) curval = int(curval);
+                if(((int(curval) - curval)>0.005))
+                    curval -= 0.004;
+                else if(((int(curval) - curval)>0))
+                    curval = int(curval);
+                update();
+            }
+        }
+
     }
-    else
-    {
-        mspeed = 0;
-    }
+
+}
+
+qreal UXTUMBLER::getcurval()
+{
+    return curval;
 }
